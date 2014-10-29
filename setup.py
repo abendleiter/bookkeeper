@@ -7,8 +7,8 @@ from swingtix import bookkeeper
 setup(
     name='swingtix-bookkeeper',
     version=bookkeeper.__VERSION__,
-    author=u'Geoff Oakham',
-    author_email=u'geoff.oakham@swingtix.ca',
+    author='Geoff Oakham',
+    author_email='geoff.oakham@swingtix.ca',
     packages=find_packages(),
     url='https://github.com/swingtix/bookkeeper',
     license='GNU Affero General Public License, version 3, see LICENSE',

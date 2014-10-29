@@ -15,7 +15,7 @@ ThirdParty must implement:
 
 """
 
-from __future__ import unicode_literals
+
 from collections import namedtuple
 from decimal import Decimal
 from django.db.models import Sum
@@ -35,9 +35,9 @@ class LedgerEntry(object):
 
     def __str__(self):
         if self._amount > 0:
-            return u"<ledger entry {0}Dr {1} {2}>".format(self.debit, self.time, self.description)
+            return "<ledger entry {0}Dr {1} {2}>".format(self.debit, self.time, self.description)
         else:
-            return u"<ledger entry {0}Cr {1} {2}>".format(self.credit, self.time, self.description)
+            return "<ledger entry {0}Cr {1} {2}>".format(self.credit, self.time, self.description)
 
     @property
     def time(self):

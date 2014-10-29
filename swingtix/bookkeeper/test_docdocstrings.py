@@ -12,6 +12,6 @@ def load_tests(loader,tests,pattern):
         tests.addTests(doctest.DocFileSuite(readme_rst))
         return tests
     else:
-        print "skipping documentation tests: README.rst not found."
+        print("skipping documentation tests: README.rst not found.")
         return unittest.TestSuite()
 
