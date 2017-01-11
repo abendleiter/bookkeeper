@@ -1,5 +1,4 @@
 from __future__ import unicode_literals
-from future.utils import python_2_unicode_compatible
 from builtins import object
 from django.utils import timezone
 from django.db import models
@@ -11,7 +10,6 @@ class _AccountApi(AccountBase):
         return Transaction()
 
 
-@python_2_unicode_compatible
 class BookSet(models.Model, BookSetBase):
     """A set of accounts for an organization.  On desktop accounting software,
     one BookSet row would typically represent one saved file.  For example, you
@@ -38,7 +36,6 @@ class BookSet(models.Model, BookSetBase):
         return self.description
 
 
-@python_2_unicode_compatible
 class Project(models.Model, ProjectBase):
     """A sub-set of a BookSet.
 
@@ -72,7 +69,6 @@ class Project(models.Model, ProjectBase):
     def __str__(self):
         return '<Project {0}>'.format(self.name)
 
-@python_2_unicode_compatible
 class Account(models.Model, _AccountApi):
     """ A financial account in a double-entry bookkeeping bookset.  For example
     a chequing account, or bank-fee expense account.
@@ -129,7 +125,6 @@ class Account(models.Model, _AccountApi):
         return '{0} {1}'.format(self.bookset.description, self.name)
 
 
-@python_2_unicode_compatible
 class ThirdParty(models.Model):
     """Represents a third party (eg. Account Receivable or Account Payable).
 
@@ -181,7 +176,6 @@ class ThirdParty(models.Model):
         return '<ThirdParty {0} {1}>'.format(self.name, self.id)
 
 
-@python_2_unicode_compatible
 class Transaction(models.Model):
     """ A transaction is a collection of AccountEntry rows (for different
     accounts) that sum to zero.
@@ -218,7 +212,6 @@ class AccountEntryManager(models.Manager):
         return self.get(account=account, transaction=transaction)
 
 
-@python_2_unicode_compatible
 class AccountEntry(models.Model):
     """A line entry changing the balance of an account.
 

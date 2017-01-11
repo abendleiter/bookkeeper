@@ -6,3 +6,4 @@ dist
 unit_coverage.xml
 unit_coverage_html
 .env.*
+.idea/

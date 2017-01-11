@@ -3,6 +3,17 @@ SwingTix Bookkeeper
 
 A `double-entry bookkeeping <http://en.wikipedia.org/wiki/Double-entry_bookkeeping_system>`_ system originally developed for `SwingTix <https://swingtix.ca>`_.
 
+Abend fork
+----------
+
+Our adaptations take place in a separate mainline branch, ``abend-master``. The normal ``master``
+branch is meant to track upstream.
+
+**Changes** made in our fork of the original project:
+
+* removed Python2 compatibility, including dependency on ``future``
+
+
 Hello, World
 ------------
 
