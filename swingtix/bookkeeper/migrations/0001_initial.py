@@ -2,9 +2,9 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import swingtix.bookkeeper.account_api
 import django.utils.timezone
-import swingtix.bookkeeper.models
+import bookkeeper.account_api
+import bookkeeper.models
 
 
 class Migration(migrations.Migration):
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('name', models.TextField()),
                 ('description', models.TextField(blank=True)),
             ],
-            bases=(models.Model, swingtix.bookkeeper.models._AccountApi),
+            bases=(models.Model, bookkeeper.models._AccountApi),
         ),
         migrations.CreateModel(
             name='AccountEntry',
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(serialize=False, primary_key=True)),
                 ('description', models.CharField(max_length=80)),
             ],
-            bases=(models.Model, swingtix.bookkeeper.account_api.BookSetBase),
+            bases=(models.Model, bookkeeper.account_api.BookSetBase),
         ),
         migrations.CreateModel(
             name='Project',
@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
                 ('name', models.TextField(help_text='project name', verbose_name='name memo')),
                 ('bookset', models.ForeignKey(help_text='The bookset for this project.', related_name='projects', to='bookkeeper.BookSet')),
             ],
-            bases=(models.Model, swingtix.bookkeeper.account_api.ProjectBase),
+            bases=(models.Model, bookkeeper.account_api.ProjectBase),
         ),
         migrations.CreateModel(
             name='ThirdParty',

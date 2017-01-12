@@ -12,6 +12,7 @@ branch is meant to track upstream.
 **Changes** made in our fork of the original project:
 
 * removed Python2 compatibility, including dependency on ``future``
+* package is in global namespace, so use as ``bookkeeper``, not ``swingtix.bookkeeper``
 
 
 Hello, World
