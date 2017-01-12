@@ -1,7 +1,12 @@
 from __future__ import unicode_literals
+
+import json  # ABEND
 from builtins import object
+
+from django.core.exceptions import ValidationError  # ABEND
 from django.utils import timezone
 from django.db import models
+
 from .account_api import AccountBase, BookSetBase, ProjectBase
 
 
@@ -68,6 +73,7 @@ class Project(models.Model, ProjectBase):
 
     def __str__(self):
         return '<Project {0}>'.format(self.name)
+
 
 class Account(models.Model, _AccountApi):
     """ A financial account in a double-entry bookkeeping bookset.  For example
@@ -176,6 +182,19 @@ class ThirdParty(models.Model):
         return '<ThirdParty {0} {1}>'.format(self.name, self.id)
 
 
+# ABEND
+def _validate_json_object(json_string):
+    try:
+        value = json.loads(json_string)
+        if not type(value) is dict:
+            raise TypeError('Expecting a JSON object, is %s' % (type(value).__name__,))
+    except (TypeError, ValueError) as error:
+        raise ValidationError(
+            'Cannot decode value from JSON: %(value)r',
+            params={'value': json_string},
+        ) from error
+
+
 class Transaction(models.Model):
     """ A transaction is a collection of AccountEntry rows (for different
     accounts) that sum to zero.
@@ -196,8 +215,16 @@ class Transaction(models.Model):
 
     tid = models.AutoField(primary_key=True)
 
-    t_stamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=timezone.now)  # ABEND renamed from t_stamp
     description = models.TextField()
+
+    # ABEND
+    type = models.PositiveSmallIntegerField(default=0)
+    """An enum-like field, to complement description"""
+    comment = models.TextField(blank=True, default='')
+    """Free-form text for additional comments (description is possibly formalized)"""
+    metadata = models.TextField(default='{}', validators=[_validate_json_object])
+    """a JSON object"""
 
     project = models.ForeignKey(Project, related_name="transactions",
         help_text="""The project for this transaction (if any).""", null=True)

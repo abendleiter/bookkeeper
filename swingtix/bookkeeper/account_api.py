@@ -43,7 +43,7 @@ class LedgerEntry(object):
 
     @property
     def time(self):
-        return self._e.transaction.t_stamp
+        return self._e.transaction.timestamp
 
     @property
     def description(self):
@@ -77,7 +77,7 @@ class LedgerEntry(object):
 
     @property
     def txid(self):
-        d = self._e.transaction.t_stamp.date()
+        d = self._e.transaction.timestamp.date()
         return "{:04d}{:02d}{:02d}{:08d}".format(d.year, d.month, d.day, self._e.aeid)
 
     def other_entry(self):
@@ -138,25 +138,28 @@ class AccountBase(object):
     def _DEBIT_IN_DB(self):
         return 1
 
-    def debit(self, amount, credit_account, description, debit_memo="", credit_memo="", datetime=None):
+    def debit(self, amount, credit_account, description, debit_memo="", credit_memo="", datetime=None, tx_type=0, tx_comment='', tx_metadata=None):
         """ Post a debit of 'amount' and a credit of -amount against this account and credit_account respectively.
 
         note amount must be non-negative.
         """
 
         assert amount >= 0
-        return self.post(amount, credit_account, description, self_memo=debit_memo, other_memo=credit_memo, datetime=datetime)
+        return self.post(amount, credit_account, description, self_memo=debit_memo, other_memo=credit_memo, datetime=datetime,
+                         tx_type=tx_type, tx_comment=tx_comment, tx_metadata=tx_metadata)  # ABEND
 
-    def credit(self, amount, debit_account, description, debit_memo="", credit_memo="", datetime=None):
+    def credit(self, amount, debit_account, description, debit_memo="", credit_memo="", datetime=None, tx_type=0, tx_comment='', tx_metadata=None):
         """ Post a credit of 'amount' and a debit of -amount against this account and credit_account respectively.
 
         note amount must be non-negative.
         """
         assert amount >= 0
-        return self.post(-amount, debit_account, description, self_memo=credit_memo, other_memo=debit_memo, datetime=datetime)
+        return self.post(-amount, debit_account, description, self_memo=credit_memo, other_memo=debit_memo, datetime=datetime,
+                         tx_type=tx_type, tx_comment=tx_comment, tx_metadata=tx_metadata)  # ABEND
 
     @transaction.atomic
-    def post(self, amount, other_account, description, self_memo="", other_memo="", datetime=None):
+    def post(self, amount, other_account, description, self_memo="", other_memo="", datetime=None,
+             tx_type=0, tx_comment='', tx_metadata=None):  # ABEND
         """ Post a transaction of 'amount' against this account and the negative amount against 'other_account'.
 
         This will show as a debit or credit against this account when amount > 0 or amount < 0 respectively.
@@ -167,8 +170,14 @@ class AccountBase(object):
         tx = self._new_transaction()
 
         if datetime:
-            tx.t_stamp = datetime
+            tx.timestamp = datetime
         #else now()
+
+        # ABEND
+        tx.type = tx_type
+        tx.comment = tx_comment
+        if tx_metadata:
+            tx.metadata = tx_metadata
 
         tx.description = description
         tx.save()
@@ -185,7 +194,7 @@ class AccountBase(object):
 
         qs = self._entries()
         if date:
-            qs = qs.filter(transaction__t_stamp__lt=date)
+            qs = qs.filter(transaction__timestamp__lt=date)
         r = qs.aggregate(b=Sum('amount'))
         b = r['b']
 
@@ -203,10 +212,10 @@ class AccountBase(object):
     def _entries_range(self, start=None, end=None):
         qs = self._entries()
         if start:
-            qs = qs.filter(transaction__t_stamp__gte=start)
+            qs = qs.filter(transaction__timestamp__gte=start)
         if end:
-            qs = qs.filter(transaction__t_stamp__lt=end)
-        qs = qs.order_by("transaction__t_stamp", "transaction__tid")
+            qs = qs.filter(transaction__timestamp__lt=end)
+        qs = qs.order_by("transaction__timestamp", "transaction__tid")
 
         return qs
 
@@ -264,7 +273,7 @@ class AccountBase(object):
             flip *= -1
 
         qs = self._entries_range(start=start, end=end)
-        qs = qs.order_by("transaction__t_stamp", "transaction__tid")
+        qs = qs.order_by("transaction__timestamp", "transaction__tid")
 
         balance = Decimal("0.00")
         if start:

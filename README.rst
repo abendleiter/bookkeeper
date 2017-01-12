@@ -13,6 +13,8 @@ branch is meant to track upstream.
 
 * removed Python2 compatibility, including dependency on ``future``
 * package is in global namespace, so use as ``bookkeeper``, not ``swingtix.bookkeeper``
+* renamed Transaction field ``t_stamp`` to ``timestamp``
+* added Transaction fields ``type``, ``comment``, ``metadata``
 
 
 Hello, World
