@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import django.utils.timezone
-import bookkeeper.account_api
-import bookkeeper.models
+import swingtix.bookkeeper.account_api
+import swingtix.bookkeeper.models
 
 
 class Migration(migrations.Migration):
